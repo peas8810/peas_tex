@@ -10,7 +10,8 @@ try:
 except (OSError, RuntimeError):
     pypandoc.download_pandoc()
 
-# Configuração de diretórios\ nBASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# Configuração de diretórios
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
 
 # Inicializa Jinja2
@@ -43,7 +44,7 @@ if uploaded_file:
         st.error(f"Erro na conversão com Pandoc: {e}")
         latex_body = ""
 
-    # Usa nome do arquivo como título do artigo
+    # Usa o nome do arquivo como título do artigo
     title = os.path.splitext(uploaded_file.name)[0]
 
     # Monta contexto para preencher o template
@@ -62,7 +63,7 @@ if uploaded_file:
         "bibliografia": []
     }
 
-    # Renderiza código LaTeX final
+    # Renderiza o .tex final
     final_tex = tpl.render(**context)
 
     # Exibe e oferece download do .tex
