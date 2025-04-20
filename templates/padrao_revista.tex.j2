@@ -1,16 +1,48 @@
-from jinja2 import Environment, FileSystemLoader
-import os
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{cite}
+\usepackage{fancyhdr}
+\usepackage[a4paper,total={6in,8in}]{geometry}
 
-# Caminho absoluto da pasta 'templates', independente de onde você rode:
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-templates_path = os.path.join(BASE_DIR, "templates")
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Revista Multidisciplinar do Nordeste Mineiro}
+\fancyhead[R]{ISSN 2178-6925}
 
-# Agora o loader procura em ./templates
-env = Environment(
-    loader=FileSystemLoader(templates_path),
-    autoescape=False,          # LaTeX não precisa de autoescape HTML
-)
+\title{ {{ titulo }} }
+\author{
+{% for a in autores %}{{ a }}{% if not loop.last %} \\ {% endif %}{% endfor %}
+}
+\date{Recebido: {{ data_recebido | default("__/__/____") }} -- Aceito: {{ data_aceito | default("__/__/____") }}}
 
-# Use o nome de arquivo sem acentos:
-tpl = env.get_template("padrao_revista.tex.j2")
+\begin{document}
+\maketitle
 
+\begin{abstract}
+\noindent {{ abstract_pt }}
+\end{abstract}
+
+\textbf{Palavras-chave:} {% for kw in keywords_pt %}{{ kw }}{% if not loop.last %}; {% endif %}{% endfor %}.
+
+\begin{abstract}
+\noindent {{ abstract_en | default("") }}
+\end{abstract}
+
+\textbf{Keywords:} {% for kw in keywords_en %}{{ kw }}{% if not loop.last %}; {% endif %}{% endfor %}.
+
+{% for sec in sections %}
+\section{ {{ sec.secao }} }
+{{ sec.conteudo }}
+
+{% endfor %}
+
+\begin{thebibliography}{99}
+{% for b in bibliografia %}
+    \bibitem{ {{ b.citekey }} } {{ b.texto }}
+{% endfor %}
+\end{thebibliography}
+
+\end{document}
