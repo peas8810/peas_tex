@@ -1,0 +1,6 @@
+streamlit
+python-docx
+pdfminer.six
+pypandoc
+jinja2
+openai
