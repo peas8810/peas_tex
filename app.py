@@ -35,7 +35,7 @@ if uploaded_file:
     # Usa o nome do arquivo como título do artigo
     title = os.path.splitext(uploaded_file.name)[0]
 
-    # Contexto para o template (pode estender para extrair metadados)
+    # Contexto para o template
     context = {
         "titulo": title,
         "autores": [],
@@ -62,3 +62,21 @@ if uploaded_file:
         file_name=f"{title}.tex",
         mime="text/x-tex"
     )
+
+    # Converte o .tex final para DOCX usando Pandoc
+    try:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".tex") as tmp_tex:
+            tmp_tex.write(final_tex.encode('utf-8'))
+            tex_path = tmp_tex.name
+        docx_path = tex_path.replace('.tex', '.docx')
+        pypandoc.convert_file(tex_path, 'docx', outputfile=docx_path)
+        with open(docx_path, 'rb') as f:
+            docx_bytes = f.read()
+        st.download_button(
+            "Baixar .docx formatado",
+            docx_bytes,
+            file_name=f"{title}_formatado.docx",
+            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        )
+    except Exception as e:
+        st.error(f"Erro na conversão para Word: {e}")
