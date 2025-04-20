@@ -1,0 +1,56 @@
+% Template para Estudo de Caso
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{geometry}
+\geometry{a4paper, total={6in,8in}}
+
+% Cabeçalho padrão
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Revista Multidisciplinar do Nordeste Mineiro, v...., 20__/0_}
+\fancyhead[R]{ISSN 2178-6925}
+
+% Títulos
+\begin{document}
+\begin{center}
+  \textbf{\large {{ titulo_pt }}}\\[1em]
+  \textbf{\large {{ titulo_en }}}
+\end{center}
+
+\begin{flushright}
+{% for a in autores %}
+  \textbf{{ a }}\\
+{% endfor %}
+  Titulação, Instituição, País\\
+  E-mail: {% for e in email %}{{ e }}{% if not loop.last %}, {% endif %}{% endfor %}\\
+  Recebido: {{ data_info[0] }} -- Aceito: {{ data_info[1] }}
+\end{flushright}
+
+% Resumo e keywords
+\section*{Resumo}
+\noindent {{ abstract_pt }}
+
+\textbf{Palavras-chave:} {% for kw in keywords_pt %}{{ kw }}{% if not loop.last %}; {% endif %}{% endfor %}.
+
+\section*{Abstract}
+\noindent {{ abstract_en }}
+
+\textbf{Keywords:} {% for kw in keywords_en %}{{ kw }}{% if not loop.last %}; {% endif %}{% endfor %}.
+
+% Seções
+\section{Introdução}
+% (conteúdo extraído)
+{% for sec in sections %}
+\section{ {{ sec.secao }} }
+{{ sec.conteudo }}
+{% endfor %}
+
+% Bibliografia
+\begin{thebibliography}{99}
+{% for b in bibliografia %}
+  \bibitem{ {{ b.citekey }} } {{ b.texto }}
+{% endfor %}
+\end{thebibliography}
+
+\end{document}
