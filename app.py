@@ -14,8 +14,8 @@ URL_GOOGLE_SHEETS = "https://script.google.com/macros/s/AKfycbyTpbWDxWkNRh_ZIlHu
 def salvar_email_google_sheets(nome, email, codigo_verificacao):
     dados = {
         "nome": nome,
-        "email": email,
-        "codigo": codigo_verificacao
+        "email": email
+      
     }
     try:
         headers = {'Content-Type': 'application/json'}
