@@ -20,19 +20,18 @@ def salvar_email_google_sheets(nome, email, codigo_verificacao):
     try:
         headers = {'Content-Type': 'application/json'}
         response = requests.post(URL_GOOGLE_SHEETS, json=dados, headers=headers)
-
         if response.text.strip() == "Sucesso":
-            st.success("✅ E-mail, nome e código registrados com sucesso!")
+            st.success("✅ Dados registrados com sucesso!")
         else:
-            st.error(f"❌ Erro ao salvar dados no Google Sheets: {response.text}")
+            st.error(f"❌ Erro ao salvar no Google Sheets: {response.text}")
     except Exception as e:
-        st.error(f"❌ Erro na conexão com o Google Sheets: {e}")
+        st.error(f"❌ Erro na conexão com Google Sheets: {e}")
 
 # Configuração de diretórios
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
 
-# Garante que Pandoc esteja disponível (download automático se necessário)
+# Garante que Pandoc esteja disponível
 try:
     pypandoc.get_pandoc_version()
 except (OSError, RuntimeError):
@@ -44,15 +43,16 @@ env = Environment(loader=FileSystemLoader(TEMPLATES_DIR), autoescape=False)
 # Título da aplicação
 st.title("Gerador de Artigo no Padrão da Revista")
 
-# --- Seção de Propaganda ---
-st.subheader("Publicidade - Anuncie Aqui - Envie email para peas8810@gmail.com")
-# Exibição de imagem para propaganda (substitua a URL pela sua imagem)
-image_url = "https://via.placeholder.com/728x90.png?text=Sua+Publicidade+Aqui"
-st.image(image_url, caption="Anuncie aqui", use_container_width=True)
-
-# Incorporação de website (exemplo de iframe para propaganda)
-st.markdown("### Anuncie seu website")
-st.components.v1.iframe("https://example.com", height=250)
+# --- Coleta de Nomes e E-mails no Cabeçalho ---
+st.subheader("Registre seu nome e e-mail")
+nome_coleta = st.text_input("Nome:")
+email_coleta = st.text_input("E-mail:")
+codigo_coleta = st.text_input("Código de Verificação:")
+if st.button("Enviar Dados"):
+    if nome_coleta and email_coleta and codigo_coleta:
+        salvar_email_google_sheets(nome_coleta, email_coleta, codigo_coleta)
+    else:
+        st.warning("Preencha nome, e-mail e código de verificação.")
 
 # Seleção de template
 article_type = st.selectbox(
@@ -179,3 +179,10 @@ else:
             )
         except Exception as e:
             st.error(f"Erro na conversão para Word: {e}")
+
+# --- Seção de Propaganda ao Final ---
+st.subheader("Publicidade - Anuncie Aqui - Envie email para peas8810@gmail.com")
+image_url = "https://via.placeholder.com/728x90.png?text=Sua+Publicidade+Aqui"
+st.image(image_url, caption="Anuncie aqui", use_container_width=True)
+st.markdown("### Anuncie seu website")
+st.components.v1.iframe("https://example.com", height=250)
