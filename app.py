@@ -3,6 +3,34 @@ import streamlit as st
 import tempfile
 import pypandoc
 from jinja2 import Environment, FileSystemLoader
+import requests
+
+# 🔗 URL da API gerada no Google Sheets
+URL_GOOGLE_SHEETS = "https://script.google.com/macros/s/AKfycbyTpbWDxWkNRh_ZIlHuAVwZaCC2ODqTmo0Un7ZDbgzrVQBmxlYYKuoYf6yDigAPHZiZ/exec"
+
+# =============================
+# 📋 Função para Salvar E-mails e Código de Verificação no Google Sheets
+# =============================
+def salvar_email_google_sheets(nome, email, codigo_verificacao):
+    dados = {
+        "nome": nome,
+        "email": email,
+        "codigo": codigo_verificacao
+    }
+    try:
+        headers = {'Content-Type': 'application/json'}
+        response = requests.post(URL_GOOGLE_SHEETS, json=dados, headers=headers)
+
+        if response.text.strip() == "Sucesso":
+            st.success("✅ E-mail, nome e código registrados com sucesso!")
+        else:
+            st.error(f"❌ Erro ao salvar dados no Google Sheets: {response.text}")
+    except Exception as e:
+        st.error(f"❌ Erro na conexão com o Google Sheets: {e}")
+
+# Configuração de diretórios
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
 
 # Garante que Pandoc esteja disponível (download automático se necessário)
 try:
@@ -10,15 +38,21 @@ try:
 except (OSError, RuntimeError):
     pypandoc.download_pandoc()
 
-# Configuração de diretórios
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
-
 # Inicializa Jinja2
 env = Environment(loader=FileSystemLoader(TEMPLATES_DIR), autoescape=False)
 
 # Título da aplicação
 st.title("Gerador de Artigo no Padrão da Revista")
+
+# --- Seção de Propaganda ---
+st.subheader("Publicidade - Anuncie Aqui - Envie email para peas8810@gmail.com")
+# Exibição de imagem para propaganda (substitua a URL pela sua imagem)
+image_url = "https://via.placeholder.com/728x90.png?text=Sua+Publicidade+Aqui"
+st.image(image_url, caption="Anuncie aqui", use_container_width=True)
+
+# Incorporação de website (exemplo de iframe para propaganda)
+st.markdown("### Anuncie seu website")
+st.components.v1.iframe("https://example.com", height=250)
 
 # Seleção de template
 article_type = st.selectbox(
