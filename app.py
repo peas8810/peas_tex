@@ -40,7 +40,7 @@ except (OSError, RuntimeError):
 env = Environment(loader=FileSystemLoader(TEMPLATES_DIR), autoescape=False)
 
 # Título da aplicação
-st.title("Gerador de Artigo no Padrão da Revista")
+st.title("Gerador de Artigo no Padrão LaTex - PEAS.Co")
 
 # --- Coleta de Nome e E-mail no Cabeçalho ---
 st.subheader("Registre seu nome e e-mail")
