@@ -14,8 +14,8 @@ URL_GOOGLE_SHEETS = "https://script.google.com/macros/s/AKfycbyTpbWDxWkNRh_ZIlHu
 def salvar_email_google_sheets(nome, email, codigo_verificacao):
     dados = {
         "nome": nome,
-        "email": email
-      
+        "email": email,
+        "codigo": codigo_verificacao
     }
     try:
         headers = {'Content-Type': 'application/json'}
@@ -47,11 +47,9 @@ st.title("Gerador de Artigo no Padrão da Revista")
 st.subheader("Registre seu nome e e-mail")
 nome_coleta = st.text_input("Nome:")
 email_coleta = st.text_input("E-mail:")
+codigo_coleta = st.text_input("Código de Verificação:")
 if st.button("Enviar Dados"):
-    if nome_coleta and email_coleta and codigo_coleta:
-        salvar_email_google_sheets(nome_coleta, email_coleta, codigo_coleta)
-    else:
-        st.warning("Preencha nome, e-mail e código de verificação.")
+    salvar_email_google_sheets(nome_coleta, email_coleta, codigo_coleta)
 
 # Seleção de template
 article_type = st.selectbox(
@@ -120,7 +118,6 @@ if manual_mode:
             "Baixar .tex", final_tex,
             file_name="manual.tex", mime="text/x-tex"
         )
-
 else:
     # Upload e conversão automática
     uploaded_file = st.file_uploader(
@@ -160,24 +157,6 @@ else:
             "Baixar .tex", final_tex,
             file_name=f"{title}.tex", mime="text/x-tex"
         )
-
-        # Conversão para Word
-        try:
-            with tempfile.NamedTemporaryFile(delete=False, suffix=".tex") as tmp_tex:
-                tmp_tex.write(final_tex.encode('utf-8'))
-                tex_path = tmp_tex.name
-            docx_path = tex_path.replace('.tex', '.docx')
-            pypandoc.convert_file(tex_path, 'docx', outputfile=docx_path)
-            with open(docx_path, 'rb') as f:
-                docx_bytes = f.read()
-            st.download_button(
-                "Baixar .docx formatado",
-                docx_bytes,
-                file_name=f"{title}_formatado.docx",
-                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-            )
-        except Exception as e:
-            st.error(f"Erro na conversão para Word: {e}")
 
 # --- Seção de Propaganda ao Final ---
 st.subheader("Publicidade - Anuncie Aqui - Envie email para peas8810@gmail.com")
