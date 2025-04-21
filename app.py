@@ -9,13 +9,12 @@ import requests
 URL_GOOGLE_SHEETS = "https://script.google.com/macros/s/AKfycbyTpbWDxWkNRh_ZIlHuAVwZaCC2ODqTmo0Un7ZDbgzrVQBmxlYYKuoYf6yDigAPHZiZ/exec"
 
 # =============================
-# 📋 Função para Salvar E-mails e Código de Verificação no Google Sheets
+# 📋 Função para Salvar Nome e E-mail no Google Sheets
 # =============================
-def salvar_email_google_sheets(nome, email, codigo_verificacao):
+def salvar_contato_google_sheets(nome, email):
     dados = {
         "nome": nome,
-        "email": email,
-        "codigo": codigo_verificacao
+        "email": email
     }
     try:
         headers = {'Content-Type': 'application/json'}
@@ -43,12 +42,12 @@ env = Environment(loader=FileSystemLoader(TEMPLATES_DIR), autoescape=False)
 # Título da aplicação
 st.title("Gerador de Artigo no Padrão da Revista")
 
-# --- Coleta de Nomes e E-mails no Cabeçalho ---
+# --- Coleta de Nome e E-mail no Cabeçalho ---
 st.subheader("Registre seu nome e e-mail")
 nome_coleta = st.text_input("Nome:")
 email_coleta = st.text_input("E-mail:")
 if st.button("Enviar Dados"):
-    salvar_email_google_sheets(nome_coleta, email_coleta, codigo_coleta)
+    salvar_contato_google_sheets(nome_coleta, email_coleta)
 
 # Seleção de template
 article_type = st.selectbox(
