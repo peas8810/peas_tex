@@ -47,7 +47,6 @@ st.title("Gerador de Artigo no Padrão da Revista")
 st.subheader("Registre seu nome e e-mail")
 nome_coleta = st.text_input("Nome:")
 email_coleta = st.text_input("E-mail:")
-codigo_coleta = st.text_input("Código de Verificação:")
 if st.button("Enviar Dados"):
     if nome_coleta and email_coleta and codigo_coleta:
         salvar_email_google_sheets(nome_coleta, email_coleta, codigo_coleta)
