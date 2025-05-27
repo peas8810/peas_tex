@@ -158,7 +158,7 @@ else:
 
 # --- Seção de Propaganda ---
 
-      # Incorporação de website (exemplo de iframe para propaganda)
+# Incorporação de website (exemplo de iframe para propaganda)
 st.markdown(
     "<h3><a href='https://peas8810.hotmart.host/product-page-1f2f7f92-949a-49f0-887c-5fa145e7c05d' target='_blank'>"
     "Técnica PROATIVA: Domine a Criação de Comandos Poderosos na IA e gere produtos monetizáveis"
