@@ -160,9 +160,34 @@ else:
             file_name=f"{title}.tex", mime="text/x-tex"
         )
 
-# --- Função para gerar o QR Code em memória ---
-def gerar_qr_code_pix(chave_pix, valor, mensagem):
-    payload = f"00020126440014BR.GOV.BCB.PIX01{len(chave_pix):02d}{chave_pix}520400005303986540{len(str(valor))}{valor:.2f}5802BR5913Doação Projeto6009Internet62070503***6304"
+def gerar_qr_code_pix(chave_pix, valor, descricao):
+    """
+    Gera um QR Code Pix estático com valor fixo.
+
+    :param chave_pix: Chave Pix (e-mail, telefone ou aleatória)
+    :param valor: Valor da transação (float ou string)
+    :param descricao: Descrição da transação (ex: "Doação Projeto")
+    :return: Imagem PIL com o QR Code
+    """
+    # Formata o valor no padrão Pix (com 2 casas decimais, separador ponto)
+    valor_str = f"{float(valor):.2f}"
+
+    # Montagem simples de Payload Pix estático (não inclui CRC-16 oficial)
+    payload = (
+        "000201"  # Payload Format Indicator
+        "26440014BR.GOV.BCB.PIX"  # Pix Key info
+        f"01{len(chave_pix):02d}{chave_pix}"  # Chave Pix
+        "52040000"  # Merchant Category Code (default)
+        "5303986"  # Currency: BRL
+        f"540{len(valor_str):02d}{valor_str}"  # Valor
+        "5802BR"  # País
+        f"5913Doação Projeto"  # Nome do recebedor (até 25 caracteres)
+        "6009Internet"  # Cidade
+        "62070503***"  # Campo adicional
+        "6304"  # Início do CRC (não calculado aqui)
+    )
+
+    # Gerar o QR Code
     qr = qrcode.make(payload)
     buffer = BytesIO()
     qr.save(buffer, format="PNG")
