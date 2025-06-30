@@ -4,6 +4,10 @@ import tempfile
 import pypandoc
 from jinja2 import Environment, FileSystemLoader
 import requests
+import qrcode
+from io import BytesIO
+from PIL import Image
+
 
 # 🔗 URL da API gerada no Google Sheets
 URL_GOOGLE_SHEETS = "https://script.google.com/macros/s/AKfycbyTpbWDxWkNRh_ZIlHuAVwZaCC2ODqTmo0Un7ZDbgzrVQBmxlYYKuoYf6yDigAPHZiZ/exec"
@@ -156,39 +160,41 @@ else:
             file_name=f"{title}.tex", mime="text/x-tex"
         )
 
-# --- Seção de Apoio via Pix ---
+# --- Função para gerar o QR Code em memória ---
+def gerar_qr_code_pix(chave_pix, valor, mensagem):
+    payload = f"00020126440014BR.GOV.BCB.PIX01{len(chave_pix):02d}{chave_pix}520400005303986540{len(str(valor))}{valor:.2f}5802BR5913Doação Projeto6009Internet62070503***6304"
+    qr = qrcode.make(payload)
+    buffer = BytesIO()
+    qr.save(buffer, format="PNG")
+    buffer.seek(0)
+    return Image.open(buffer)
 
+# --- Dados da Doação ---
+chave_pix = "pesas8810@gmail.com"
+valor_sugerido = 20.00
+mensagem = "Apoio ao Projeto Streamlit"
+
+# --- Layout de Apoio ---
 st.markdown(
     """
     <h3 style='color: green;'>💚 Apoie Este Projeto com um Pix!</h3>
-    <p>Este site é mantido de forma independente, sem patrocínio de grandes empresas. Temos custos com servidores, desenvolvimento e manutenção.</p>
-    <p>Se este conteúdo tem te ajudado, considere fazer uma contribuição simbólica de <strong>R$ 20,00</strong>.</p>
+    <p>Este site é mantido de forma independente, sem patrocínio de grandes empresas. Temos custos com servidores, APIs e manutenção.</p>
+    <p>Se este conteúdo tem te ajudado, considere contribuir com <strong>R$ 20,00</strong>.</p>
     <p><strong>Chave Pix (e-mail):</strong> <span style='color: blue;'>pesas8810@gmail.com</span></p>
     """,
     unsafe_allow_html=True
 )
 
-# Exibe o QR Code Pix
-try:
-    img = Image.open("pix_qr.png")
-    st.image(img, caption="📲 Aponte a câmera do seu banco para doar via Pix", width=250)
-except FileNotFoundError:
-    st.warning("QR Code Pix não encontrado. Por favor, adicione o arquivo 'pix_qr.png' na pasta do projeto.")
+# --- Exibir o QR Code ---
+st.image(gerar_qr_code_pix(chave_pix, valor_sugerido, mensagem), caption="📲 Aponte a câmera do seu banco para doar via Pix", width=250)
 
-# Contador de meta (simples - valor manual, você pode criar uma variável para atualizar conforme desejar)
+# --- Meta de Arrecadação ---
 meta = 300
-arrecadado = 60  # Exemplo, você pode alterar conforme forem chegando as doações
+arrecadado = 60  # Atualize conforme as doações forem chegando
 falta = meta - arrecadado
 
 st.info(f"🎯 Meta do mês: R$ {meta}, já arrecadado: R$ {arrecadado}, faltam: R$ {falta} para bater a meta!")
 
-# Mensagem de agradecimento
-st.success("🙏 Obrigado a todos que já contribuíram! Sua ajuda mantém este projeto no ar para todos!")
+# --- Agradecimento ---
+st.success("🙏 Obrigado a todos que já contribuíram! Sua ajuda mantém este projeto vivo!")
 
-# Link de produto patrocinado (se quiser manter também)
-st.markdown(
-    "<h4><a href='https://peas8810.hotmart.host/product-page-1f2f7f92-949a-49f0-887c-5fa145e7c05d' target='_blank'>"
-    "🌟 Técnica PROATIVA: Aprenda a Criar Comandos Poderosos na IA e Gere Produtos Monetizáveis"
-    "</a></h4>",
-    unsafe_allow_html=True
-)
