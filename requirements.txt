@@ -4,3 +4,5 @@ pdfminer.six
 pypandoc
 jinja2
 openai
+qrcode[pil]
+pillow
