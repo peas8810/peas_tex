@@ -184,7 +184,7 @@ st.markdown(
     <h3 style='color: green;'>💚 Apoie Este Projeto com um Pix!</h3>
     <p>Temos custos com servidores, desenvolvimento e APIs. Se este site está te ajudando, considere uma contribuição de <strong>R$ 20,00</strong>.</p>
     <p><strong>Chave Pix:</strong> <span style='color: blue;'>pesas8810@gmail.com</span></p>
-    <p><strong>Nome do recebedor:</strong> PEDRO EMILIO AMADOR SALOM</p>
+    <p><strong>Nome do recebedor:</strong> PEAS TECHNOLOGIES</p>
     """,
     unsafe_allow_html=True
 )
@@ -193,5 +193,4 @@ st.markdown(
 qr_img = gerar_qr_code_pix(payload)
 st.image(qr_img, caption="📲 Escaneie o QR Code para doar via Pix (R$ 20,00)", width=300)
 
-# Exibe o código Pix Copia e Cola (se quiser, o usuário pode copiar manualmente)
-st.text_area("📋 Pix Copia e Cola:", payload, height=150)
+
