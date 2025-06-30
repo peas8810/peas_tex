@@ -193,4 +193,7 @@ st.markdown(
 qr_img = gerar_qr_code_pix(payload)
 st.image(qr_img, caption="📲 Escaneie o QR Code para doar via Pix (R$ 20,00)", width=300)
 
+# --- Agradecimento ---
+st.success("🙏 Obrigado a todos que já contribuíram! Sua ajuda mantém este projeto vivo!")
+
 
