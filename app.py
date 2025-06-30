@@ -160,66 +160,38 @@ else:
             file_name=f"{title}.tex", mime="text/x-tex"
         )
 
-def gerar_qr_code_pix(chave_pix, valor, descricao):
-    """
-    Gera um QR Code Pix estático com valor fixo.
-
-    :param chave_pix: Chave Pix (e-mail, telefone ou aleatória)
-    :param valor: Valor da transação (float ou string)
-    :param descricao: Descrição da transação (ex: "Doação Projeto")
-    :return: Imagem PIL com o QR Code
-    """
-    # Formata o valor no padrão Pix (com 2 casas decimais, separador ponto)
-    valor_str = f"{float(valor):.2f}"
-
-    # Montagem simples de Payload Pix estático (não inclui CRC-16 oficial)
-    payload = (
-        "000201"  # Payload Format Indicator
-        "26440014BR.GOV.BCB.PIX"  # Pix Key info
-        f"01{len(chave_pix):02d}{chave_pix}"  # Chave Pix
-        "52040000"  # Merchant Category Code (default)
-        "5303986"  # Currency: BRL
-        f"540{len(valor_str):02d}{valor_str}"  # Valor
-        "5802BR"  # País
-        f"5913Doação Projeto"  # Nome do recebedor (até 25 caracteres)
-        "6009Internet"  # Cidade
-        "62070503***"  # Campo adicional
-        "6304"  # Início do CRC (não calculado aqui)
+def gerar_qr_code_pix(payload):
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_M,
+        box_size=10,
+        border=4,
     )
-
-    # Gerar o QR Code
-    qr = qrcode.make(payload)
+    qr.add_data(payload)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="black", back_color="white")
     buffer = BytesIO()
-    qr.save(buffer, format="PNG")
+    img.save(buffer, format="PNG")
     buffer.seek(0)
     return Image.open(buffer)
 
-# --- Dados da Doação ---
-chave_pix = "pesas8810@gmail.com"
-valor_sugerido = 20.00
-mensagem = "Apoio ao Projeto Streamlit"
+# --- Payload Pix Oficial (o seu) ---
+payload = "00020126400014br.gov.bcb.pix0118peas8810@gmail.com520400005303986540520.005802BR5925PEDRO EMILIO AMADOR SALOM6013TEOFILO OTONI62200516PEASTECHNOLOGIES6304C9DB"
 
-# --- Layout de Apoio ---
+# --- Layout Streamlit ---
 st.markdown(
     """
     <h3 style='color: green;'>💚 Apoie Este Projeto com um Pix!</h3>
-    <p>Este site é mantido de forma independente, sem patrocínio de grandes empresas. Temos custos com servidores, APIs e manutenção.</p>
-    <p>Se este conteúdo tem te ajudado, considere contribuir com <strong>R$ 20,00</strong>.</p>
-    <p><strong>Chave Pix (e-mail):</strong> <span style='color: blue;'>pesas8810@gmail.com</span></p>
+    <p>Temos custos com servidores, desenvolvimento e APIs. Se este site está te ajudando, considere uma contribuição de <strong>R$ 20,00</strong>.</p>
+    <p><strong>Chave Pix:</strong> <span style='color: blue;'>pesas8810@gmail.com</span></p>
+    <p><strong>Nome do recebedor:</strong> PEDRO EMILIO AMADOR SALOM</p>
     """,
     unsafe_allow_html=True
 )
 
-# --- Exibir o QR Code ---
-st.image(gerar_qr_code_pix(chave_pix, valor_sugerido, mensagem), caption="📲 Aponte a câmera do seu banco para doar via Pix", width=250)
+# Exibe o QR Code
+qr_img = gerar_qr_code_pix(payload)
+st.image(qr_img, caption="📲 Escaneie o QR Code para doar via Pix (R$ 20,00)", width=300)
 
-# --- Meta de Arrecadação ---
-meta = 300
-arrecadado = 60  # Atualize conforme as doações forem chegando
-falta = meta - arrecadado
-
-st.info(f"🎯 Meta do mês: R$ {meta}, já arrecadado: R$ {arrecadado}, faltam: R$ {falta} para bater a meta!")
-
-# --- Agradecimento ---
-st.success("🙏 Obrigado a todos que já contribuíram! Sua ajuda mantém este projeto vivo!")
-
+# Exibe o código Pix Copia e Cola (se quiser, o usuário pode copiar manualmente)
+st.text_area("📋 Pix Copia e Cola:", payload, height=150)
