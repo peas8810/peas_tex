@@ -156,14 +156,39 @@ else:
             file_name=f"{title}.tex", mime="text/x-tex"
         )
 
-# --- Seção de Apoio e Propaganda ---
+# --- Seção de Apoio via Pix ---
 
 st.markdown(
     """
-    <h3 style='color: green;'>💚 Apoie Nosso Projeto!</h3>
-    <p>Nosso site é mantido de forma independente e gratuita para todos os usuários. Temos custos com servidores, desenvolvimento e manutenção contínua.</p>
-    <p>Se este projeto tem te ajudado, considere fazer uma doação voluntária de <strong>R$ 20,00 via Pix</strong> para o e-mail: <strong>peas8810@gmail.com</strong></p>
-    <p>Sua colaboração é fundamental para que possamos continuar oferecendo este serviço a todos!</p>
+    <h3 style='color: green;'>💚 Apoie Este Projeto com um Pix!</h3>
+    <p>Este site é mantido de forma independente, sem patrocínio de grandes empresas. Temos custos com servidores, desenvolvimento e manutenção.</p>
+    <p>Se este conteúdo tem te ajudado, considere fazer uma contribuição simbólica de <strong>R$ 20,00</strong>.</p>
+    <p><strong>Chave Pix (e-mail):</strong> <span style='color: blue;'>pesas8810@gmail.com</span></p>
     """,
+    unsafe_allow_html=True
+)
+
+# Exibe o QR Code Pix
+try:
+    img = Image.open("pix_qr.png")
+    st.image(img, caption="📲 Aponte a câmera do seu banco para doar via Pix", width=250)
+except FileNotFoundError:
+    st.warning("QR Code Pix não encontrado. Por favor, adicione o arquivo 'pix_qr.png' na pasta do projeto.")
+
+# Contador de meta (simples - valor manual, você pode criar uma variável para atualizar conforme desejar)
+meta = 300
+arrecadado = 60  # Exemplo, você pode alterar conforme forem chegando as doações
+falta = meta - arrecadado
+
+st.info(f"🎯 Meta do mês: R$ {meta}, já arrecadado: R$ {arrecadado}, faltam: R$ {falta} para bater a meta!")
+
+# Mensagem de agradecimento
+st.success("🙏 Obrigado a todos que já contribuíram! Sua ajuda mantém este projeto no ar para todos!")
+
+# Link de produto patrocinado (se quiser manter também)
+st.markdown(
+    "<h4><a href='https://peas8810.hotmart.host/product-page-1f2f7f92-949a-49f0-887c-5fa145e7c05d' target='_blank'>"
+    "🌟 Técnica PROATIVA: Aprenda a Criar Comandos Poderosos na IA e Gere Produtos Monetizáveis"
+    "</a></h4>",
     unsafe_allow_html=True
 )
